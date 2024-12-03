@@ -1,14 +1,20 @@
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-ryswo4hq5k+-hp(-itgyzmcxtn6y%h@o0afs3-bo8wxis)4@$q'
+load_dotenv()
 
-DEBUG = True
+# Your secret key, don't give people
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+DEBUG = True if os.getenv("DEBUG") == 'True' else False
 
 ALLOWED_HOSTS = ['*']
 
-
+# path from your module
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,10 +56,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
+# Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv("NAME"),
+        'USER': os.getenv("USER"),
+        'PASSWORD': os.getenv("PASSWORD"),
+        'HOST': os.getenv("HOST"),
+        'PORT': os.getenv("PORT"),
     }
 }
 
