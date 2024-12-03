@@ -4,7 +4,6 @@ from django.core.validators import MaxValueValidator
 
 class Product(models.Model):
     """содержит поля наименование, описание, изображение, категория, цена за покупку,дата создания,дата последнего изменения."""
-
     name = models.CharField(
         max_length=100,
         verbose_name="Название продукта",
@@ -23,7 +22,7 @@ class Product(models.Model):
     category = models.CharField(
         max_length=100, verbose_name="Категория", help_text="Введите категорию"
     )
-    price_purchase = models.IntegerField(
+    price = models.IntegerField(
         default=0, validators=[MaxValueValidator(10000)], verbose_name="Цена за продукт"
     )
     created_at = models.DateField(

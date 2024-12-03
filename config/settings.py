@@ -2,6 +2,8 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "catalog.settings")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
