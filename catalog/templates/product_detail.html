@@ -6,11 +6,11 @@
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         <div class="col">
           <div class="card shadow-sm">
-            <img src="{{ product.image | media_filter }}">
             <div class="card-body">
+              <p><img src="{{ products.image | media_filter }}" width=" 400" height=" 270">
               <p class="card-text">Название: {{ products.name }}</p>
-              <p class="card-text">Описание: {{ products.description }}</p>
-              <p class="card-text">Из магазина: {{ products.category }}</p>
+              <p class="card-text">Описание: {{ products.description | truncatechars:100 }}</p>
+              <p class="card-text">Из магазина: {{ products.category}}</p>
               <p class="card-text">Цена: {{ products.price }}</p>
               <p class="card-text">Дата создания: {{ products.created_at }}</p>
               <p class="card-text">Дата изменения: {{ products.updated_at }}</p>
