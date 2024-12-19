@@ -23,7 +23,7 @@ class Product(models.Model):
         max_length=100, verbose_name="Категория", help_text="Введите категорию"
     )
     price = models.IntegerField(
-        default=0, validators=[MaxValueValidator(10000)], verbose_name="Цена за продукт"
+        default=0, validators=[MaxValueValidator(1000000)], verbose_name="Цена за продукт"
     )
     created_at = models.DateField(
         blank=True,
@@ -36,6 +36,11 @@ class Product(models.Model):
         null=True,
         verbose_name="дата последнего изменения",
         help_text="Введите дату последнего изменения",
+    )
+    views_counter = models.PositiveIntegerField(
+        verbose_name="Счетчик просмотров",
+        help_text="Укажите кол-во просмотров",
+        default=0
     )
 
     class Meta:
