@@ -7,6 +7,12 @@ FORBIDDEN_WORDS = [
 ]
 
 
+class ProductModeratorForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['description', 'category', 'category', 'price']
+
+
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -16,7 +22,6 @@ class ProductForm(forms.ModelForm):
         super(ProductForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
-
 
     def clean_name(self):
         name = self.cleaned_data.get('name').lower()
