@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.core.validators import MaxValueValidator
 
@@ -47,6 +48,10 @@ class Product(models.Model):
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
         ordering = ["name", "category"]
+        permissions = [
+            ('can_edit_name', 'can edit name'),
+            ('can_edit_descriptions', 'can edit descriptions'),
+        ]
 
     def __str__(self):
         return self.name

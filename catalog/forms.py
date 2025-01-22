@@ -1,42 +1,45 @@
-from django.core.exceptions import ValidationError
-from django.forms import ModelForm, BooleanField
-from catalog.models import Product
+from django import forms
+from .models import Product
 
-invalied_words = ['казино', 'криптовалюта', "крипта", 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
-
-
-class StyleFormMixin:
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for fild_name, fild in self.fields.items():
-            if isinstance(fild, BooleanField):
-                fild.widget.attrs['class'] = "form-check-input"
-            else:
-                fild.widget.attrs['class'] = "form-control"
+FORBIDDEN_WORDS = [
+    'казино', 'криптовалюта', 'крипта', 'биржа', 'дешево',
+    'бесплатно', 'обман', 'полиция', 'радар'
+]
 
 
-def validate_disallowed(value):
-    if any(disallowed_word in value.lower() for disallowed_word in invalied_words):
-        raise ValidationError("Это слово запрещенно на этом сайте!")
-
-
-class ProductForm(StyleFormMixin, ModelForm):
+class ProductModeratorForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['description', 'category', 'category', 'price']
 
-    def clean_price(self):
-        price = self.cleaned_data['price']
-        if int(price) < 0:
-            raise ValidationError('Цена не может быть ниже 0!')
-        return price
 
-    def clean_data(self):
-        name = self.cleaned_data('name')
-        validate_disallowed(name)
-        return name
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'image', 'category', 'price']
+
+    def __init__(self, *args, **kwargs):
+        super(ProductForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name').lower()
+        for word in FORBIDDEN_WORDS:
+            if word in name:
+                raise forms.ValidationError(f'Название не может содержать слово "{word}".')
+        return self.cleaned_data.get('name')
 
     def clean_description(self):
-        description = self.cleaned_data('description', '')
-        validate_disallowed(description)
-        return description
+        description = self.cleaned_data.get('description').lower()  # Приводим к нижнему регистру
+        for word in FORBIDDEN_WORDS:
+            if word in description:
+                raise forms.ValidationError(f'Описание не может содержать слово "{word}".')
+        return self.cleaned_data.get('description')
+
+    def clean_price(self):
+        price = self.cleaned_data.get('price')
+        if price < 0:
+            raise forms.ValidationError("Цена не может быть отрицательной")
+
+        return price
