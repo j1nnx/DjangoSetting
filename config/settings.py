@@ -1,5 +1,4 @@
 from pathlib import Path
-import os
 from dotenv import load_dotenv
 
 import os
@@ -25,6 +24,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'catalog',
+    'blog',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -102,5 +103,7 @@ STATICFILES_DIRS = (BASE_DIR / 'static',)
 MEDIA_URL = 'media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AUTH_USER_MODEL = 'users.CustomerUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
