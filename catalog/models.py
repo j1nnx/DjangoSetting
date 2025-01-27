@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import MaxValueValidator
 
+from users.models import User
+
 
 class Product(models.Model):
     """содержит поля наименование, описание, изображение, категория, цена за покупку,дата создания,дата последнего изменения."""
@@ -23,7 +25,7 @@ class Product(models.Model):
         max_length=100, verbose_name="Категория", help_text="Введите категорию"
     )
     price = models.IntegerField(
-        default=0, validators=[MaxValueValidator(10000)], verbose_name="Цена за продукт"
+        default=0, validators=[MaxValueValidator(1000000)], verbose_name="Цена за продукт"
     )
     created_at = models.DateField(
         blank=True,
@@ -37,11 +39,23 @@ class Product(models.Model):
         verbose_name="дата последнего изменения",
         help_text="Введите дату последнего изменения",
     )
+    views_counter = models.PositiveIntegerField(
+        verbose_name="Счетчик просмотров",
+        help_text="Укажите кол-во просмотров",
+        default=0
+    )
+    owner = models.ForeignKey(User, verbose_name='Владелец', help_text='Укажите владельца собаки', blank=True,
+                              null=True,
+                              on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
         ordering = ["name", "category"]
+        permissions = [
+            ('can_edit_product', 'can edit product'),
+            ('can_edit_descriptions', 'can edit descriptions'),
+        ]
 
     def __str__(self):
         return self.name
