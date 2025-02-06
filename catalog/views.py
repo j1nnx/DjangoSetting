@@ -1,9 +1,25 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 from django.urls import reverse_lazy, reverse
 from catalog.forms import ProductForm, ProductModeratorForm
 from catalog.models import Product
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.core.cache import cache
+
+from catalog.services import get_products_from_cache
+
+
+def my_view(request):
+    data = cache.get('my_key')
+
+    if not data:
+        data = 'some expensive computation'
+        cache.set('my_key', data, 60 * 15)
+
+    return HttpResponse(data)
 
 
 class HomeTemplateView(TemplateView):
@@ -14,8 +30,12 @@ class ContactTemplateView(TemplateView):
     template_name = 'catalog/contacts.html'
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ProductListView(ListView):
     model = Product
+
+    def get_queryset(self):
+        return get_products_from_cache()
 
 
 class ProductDetailView(DetailView):
